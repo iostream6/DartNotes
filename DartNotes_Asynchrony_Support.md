@@ -16,17 +16,17 @@ future.then((value) => handleValue(value))
 ```
 * Future<int> is a future whose completion value type is of int.
 * the `then()` method registers a callback to handle sucessful future completion with a value.
-* the ```catchError()``` method registers a callback to handle failure with an error.
+* the `catchError()` method registers a callback to handle failure with an error.
 
-Note that the '```then()```' (and '```catchError()```') methods above reurn future objects. So in effect, ```then().catchError()``` is chaining two asynchronous calls. This approach may be used to chain multiple async calls e.g. ```then().then().then()...catchError();```
+Note that the `then()` (and `catchError()`) methods above reurn future objects. So in effect, `then().catchError()` is chaining two asynchronous calls. This approach may be used to chain multiple async calls e.g. `then().then().then()...catchError();`
 
-If the registered callback returns a value (or error) other than a Future<xxx>, the returned value is wrapped by Dart in a Future that completes in the returned value(or error), ensuring that ```then()``` or ```catchError()``` always returns a Future. This means that the final ```catchError()``` in a multi ```then()``` chain can handle the error from all the preceeding ```then()``` functions, including the original asynchronous call.
+If the registered callback returns a value (or error) other than a Future<xxx>, the returned value is wrapped by Dart in a Future that completes in the returned value(or error), ensuring that `then()` or `catchError()` always returns a Future. This means that the final `catchError()` in a multi `then()` chain can handle the error from all the preceeding `then()` functions, including the original asynchronous call.
 
 Futures are limited to limited to delivering a single value/error asynchronously, at some point in the future. Conversely, a stream can deliver **zero or more** values/errors over time.
 
 A Stream is a source of asynchronous events. Each event may be either a data (or value) event - in which case it is referred to as an element of the stream - or an error event - in which case it is a notification that some error has occured. We suscribe to the stream  (i.e. register callbacks that respond to the data events (and optionally error events) to take advantage of the stream. Streams may be single-subscription - only allowing a single suscriber (i.e. listerner) during the entire life of the stream and not raising any events until it has a suscriber. Streams may also be multi-subscription type - i.e. broadcast streams - allwing zero or more subscribers and raising events regardless of the number of subscribers.
 
-Stream subscription is via ```listen()``` method, allwing us register for ```onData```, ```onError```, ```onDone``` and to set the ```cancelOnError``` property. Note that the implementation of ```foreach()``` internally calls ```listen```. The ```StreamSubscription``` object returned by listen may be used to control the event flow (cancel, pause, etc). Once we have subscribed to the stream, we can use/manipulate the data in elegant and interesting ways (e.g map, where, etc). These methods are similar to those available for Dart Iterable.  
+Stream subscription is via `listen()` method, allwing us register for `onData`, `onError`, `onDone` and to set the `cancelOnError` property. Note that the implementation of `foreach()` internally calls `listen`. The `StreamSubscription` object returned by listen may be used to control the event flow (cancel, pause, etc). Once we have subscribed to the stream, we can use/manipulate the data in elegant and interesting ways (e.g map, where, etc). These methods are similar to those available for Dart Iterable.  
 
 The following table illustrates that, in Dart, Streams are the asynchronous counterparts of Iterables. Please note that Java Stream class represents something entirely different to Dart Stream. Dart Streams are more akin to Queue's in Java. In Java, the concept of Stream is more concerned with describing a data source and the computational operations to be performed in aggregate on that data source, including how those operations are to be performed - sequentially or in parallel. The original Java collection classes (e.g. Lists, Maps, etc) are more focused on how to manage and directly access (get/put, etc) their elements. 
 
@@ -41,16 +41,16 @@ TODO Explain Creating Streams
 ```
 
 
-Interesting Stream packages are: ```async``` and ```stream_transform```.
+Interesting Stream packages are: `async` and `stream_transform`.
 
 
 
-Apart from  ```then``` and ```catchError```, ```listen``` and ```forEach``` future and stream API methods which enable asynchronous handling of futures and streams, there is the ```async``` and ```await``` keywords which allows asynchronous code to be written/used very much like synchronous code.
+Apart from  `then` and `catchError`, `listen` and `forEach` future and stream API methods which enable asynchronous handling of futures and streams, there is the `async` and `await` keywords which allows asynchronous code to be written/used very much like synchronous code.
 
-## Using ```async``` and ```await``` with Futures
+## Using `async` and `await` with Futures
 
 
-An ```await``` expression causes execution to be suspended until the associated future completes. For example:
+An `await` expression causes execution to be suspended until the associated future completes. For example:
 
 ```dart
 var version = lookUpVersion(); //lookUpVersion returns a future
@@ -62,9 +62,9 @@ var version = await lookUpVersion(); //'await lookUpVersion()' is an "await expr
 print('Version = $version'); 
 //as expected, the above prints: Version = 2020.2
 ```
-In the above, without ```await``` execution does not wait, leading to unpredictable results (e.g. when toString is called on an as yet uncompleted future object).
+In the above, without `await` execution does not wait, leading to unpredictable results (e.g. when toString is called on an as yet uncompleted future object).
 
-To use ```await```, the containing function/method must be marked as ```async``` and must also be declared as having a return value of type Future, e.g.:
+To use `await`, the containing function/method must be marked as `async` and must also be declared as having a return value of type Future, e.g.:
 
 ```dart
 // note async marker before method opening braces
@@ -82,7 +82,7 @@ Future<String> checkVersion() async {
 }
 ```
 
-Conveniently, ```await``` allows try-catch-finally as in normal synchronous usage, e.g.:
+Conveniently, `await` allows try-catch-finally as in normal synchronous usage, e.g.:
 ```dart
 
 Future<String> checkVersion() async {
@@ -102,7 +102,7 @@ The right hand part of the await expression usually resolves to a Future - if it
 
 ## Using `async` and `await for` with Streams
 
-```async``` and ```await for``` may be used to handle stream values. ```await for``` can only be used in an async function/method. The construct is used viz:
+`async` and `await for` may be used to handle stream values. `await for` can only be used in an async function/method. The construct is used viz:
 
 ```dart
  .
