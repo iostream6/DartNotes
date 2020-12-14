@@ -15,7 +15,7 @@ future.then((value) => handleValue(value))
       .catchError((error) => handleError(error));
 ```
 * Future<int> is a future whose completion value type is of int.
-* the ```then()``` method registers a callback to handle sucessful future completion with a value.
+* the `then()` method registers a callback to handle sucessful future completion with a value.
 * the ```catchError()``` method registers a callback to handle failure with an error.
 
 Note that the '```then()```' (and '```catchError()```') methods above reurn future objects. So in effect, ```then().catchError()``` is chaining two asynchronous calls. This approach may be used to chain multiple async calls e.g. ```then().then().then()...catchError();```
@@ -100,7 +100,7 @@ Future<String> checkVersion() async {
 
 The right hand part of the await expression usually resolves to a Future - if it doesn't, dart wraps is in a Future ensuring that await works as normal.
 
-## Using ```async``` and ```await for``` with Streams
+## Using `async` and `await for` with Streams
 
 ```async``` and ```await for``` may be used to handle stream values. ```await for``` can only be used in an async function/method. The construct is used viz:
 
