@@ -9,7 +9,7 @@ The basic constructs for asynchronous programming in Dart *Future*s and *Stream*
 
 A Future object represents an asynchronous computation with a **single** completion value, or error, available at some time in the future. Callbacks that handle the value or error once it becomes available (i.e. once the async operation represented by this future is completed) may be registered, for example:
 
-```
+```dart
 Future<int> future = getFuture();
 future.then((value) => handleValue(value))
       .catchError((error) => handleError(error));
@@ -28,30 +28,96 @@ A Stream is a source of asynchronous events. Each event may be either a data (or
 
 Stream subscription is via ```listen()``` method, allwing us register for ```onData```, ```onError```, ```onDone``` and to set the ```cancelOnError``` property. Note that the implementation of ```foreach()``` internally calls ```listen```. The ```StreamSubscription``` object returned by listen may be used to control the event flow (cancel, pause, etc). Once we have subscribed to the stream, we can use/manipulate the data in elegant and interesting ways (e.g map, where, etc). These methods are similar to those available for Dart Iterable.  
 
-The following table illustrates that, in Dart, Streams are the asynchronous counterparts of Iterables. Please note that Java Stream class represents something entirely different to Dart Stream. Dart Streams are more akin to Queue's in Java. In Java, the concept of Stream is more concerned with describing a data source and the computational operations to be performed in aggregate on that data source, including how those operations are to be performed - sequentially or in parallel. The original Java collection classes are more focused on how to manage and directly access (get/put, etc) their elements. 
+The following table illustrates that, in Dart, Streams are the asynchronous counterparts of Iterables. Please note that Java Stream class represents something entirely different to Dart Stream. Dart Streams are more akin to Queue's in Java. In Java, the concept of Stream is more concerned with describing a data source and the computational operations to be performed in aggregate on that data source, including how those operations are to be performed - sequentially or in parallel. The original Java collection classes (e.g. Lists, Maps, etc) are more focused on how to manage and directly access (get/put, etc) their elements. 
 
 | Mode             |  Single Value  |  Zero or More Values  |
 | ------------ | -------------- | --------------------- |
 | Synchronous  |      int       | Iterable<int>         |
 | Asynchronous | Future<int>    | Stream<int>           |
 
-```TODO Explain Creating Streams```
+
+```
+TODO Explain Creating Streams
+```
+
 
 Interesting Stream packages are: ```async``` and ```stream_transform```.
+
+
 
 Apart from  ```then``` and ```catchError```, ```listen``` and ```forEach``` future and stream API methods which enable asynchronous handling of futures and streams, there is the ```async``` and ```await``` keywords which allows asynchronous code to be written/used very much like synchronous code.
 
 ## Using ```async``` and ```await``` with Futures
 
+
 An ```await``` expression causes execution to be suspended until the associated future completes. For example:
 
-```
+```dart
 var version = lookUpVersion(); //lookUpVersion returns a future
+print('Version = $version'); 
+//unexpectedly, the above prints: Version = _Future
+ .
+ .
+var version = await lookUpVersion(); //'await lookUpVersion()' is an "await expression"
+print('Version = $version'); 
+//as expected, the above prints: Version = 2020.2
+```
+In the above, without ```await``` execution does not wait, leading to unpredictable results (e.g. when toString is called on an as yet uncompleted future object).
 
-catchError()
+To use ```await```, the containing function/method must be marked as ```async``` and must also be declared as having a return value of type Future, e.g.:
+
+```dart
+// note async marker before method opening braces
+Future<String> checkVersion() async {
+    .
+    .
+    var version = await lookUpVersion();
+    .
+    .
+    return version;  
+    // Note you don't explicitly have to create Future<String> here to be returned
+    // Dart will ensure what that the return value is wrapped in a Future as appropriate
+    // per the method declaration (so as Future<String> in this case, with completion 
+    // value equal to $version
+}
 ```
 
----
+Conveniently, ```await``` allows try-catch-finally as in normal synchronous usage, e.g.:
+```dart
+
+Future<String> checkVersion() async {
+    .
+    .
+    try{
+        var version = await lookUpVersion();
+        return version;  
+    }catch(e){
+        //...
+        return 'Unknown';
+    }
+}
+```
+
+The right hand part of the await expression usually resolves to a Future - if it doesn't, dart wraps is in a Future ensuring that await works as normal.
+
+## Using ```async``` and ```await for``` with Streams
+
+```async``` and ```await for``` may be used to handle stream values. ```await for``` can only be used in an async function/method. The construct is used viz:
+
+```dart
+ .
+ .
+ .
+ // inside async method
+ await for (varOrType identifier in expression) {
+     //can use break/return here to stop listening
+     //to the stream
+ }
+```
+
+
+
+## Understanding Dart Asynchrony and Parallelism
 
 Streams in Dart are simply convenience constructs to handle data/error events whose arrival time is unknown. Futures are the equivalent construct for single events. It should be noted that the existence of Futures (or Streams) **does not necessarily imply the existence of  separate corresponding background threads**. 
 
@@ -69,4 +135,6 @@ Disk and network IO operations are indeterminate and handled asynchronously in D
 
 To achieve true parallel processing (as opposed to 'virtual' concurrency) within a Dart program, multiple isolates are required. If you have an expensive computation, you need to run it on a separate isolate.
 
-```TODO Explain How```
+```
+TODO Explain How to create Isolates + Examples
+```
