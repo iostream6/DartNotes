@@ -76,6 +76,19 @@ String anotherString = '''Good Morning!
 Welcome to the Dashboard''' 
 ```
 
+### Dynamic Type
+Dart allows to define a variable as having a `dynamic` type. This is rarely a good idea but it allows assignment of values/references of different types to the variable. For example:
+
+```dart
+var alpha = 'Hello World'; 
+alpha = 123; //compile error
+
+//using dynamic type
+dynamic beta = 'Hello World';
+beta = 123; // no issues
+
+```
+
 ### Lists
 A Dart list is a resizable ordered array of objects of the same type. 
 ```dart
@@ -258,6 +271,46 @@ In the above, `pf2` and `pf3` are variables that references anonymous functions.
 In the above, items within square brackets are optional. So for an anonymous function without any parameters, we have `(){ //function body here};`. Also, if the anonymous function contains only a single statement, we can use the shorthand **arrow** notation to write the function as follows `(params...) => expression`. An example of this is given in `pf3` above, which is equivalent to `pf2` but uses the shorthand arrow notation.
 
 ### TODO - Lexical closures!
+
+## Code Comments
+
+Dart support three types of comments: single-line, multi-line and documentation comments.
+
+### Single-line Comments
+
+A single-line comment begins with `//`. Everything between `//` and the end of line is ignored by the Dart compiler. These are useful for providing brief insight or commentary specific to a line of code.
+
+### Multi-line Comments
+
+Multi-line comment begins with /* and ends with */. Everything between /* and */ is ignored by the Dart compiler (unless the comment is a documentation comment; see the next section).
+
+### Documentation Comments
+
+These are comments used for documenting code, just like Javadoc comments in Java.  Documentation comments begin with `\\\`, on each comment line. They could also using the `/**`  and `*/` opening and closing sequences respectively. Within docummentation comments, you can refer to classes, methods, fields, top-level variables, functions, and parameters by placing their names in square brackets. The names in brackets are resolved in the lexical scope of the documented program element. An example is provided below:
+
+```dart
+
+
+/// Represents a Professor.
+///
+/// A professor is a [Person] that is qualified to teach [Course]s.
+///
+class Professor extends Person {
+  String title;
+  String department;
+
+   /// Creates a professor instance.
+   ///
+   /// [name] the name of the professor
+   /// [ssn] the SSN of the professor
+   /// [title] the title of the professor
+   /// [department] the department to which the professor belongs
+   //
+  Professor(String name, String ssn, this.title, this.department)
+      : super(name, ssn);
+}
+```
+
 
 ## Operators, Switch Statements and Exceptions
 
