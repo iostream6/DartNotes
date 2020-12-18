@@ -4,9 +4,9 @@
 
 Dart is a modern, strongly typed object-oriented language. Some important Dart characteristics/tidbits are outlined below:
 
-* Dart code may be AOT compiled to native code providing good performance on workstations and mobile (x86 and ARM). It may also be JIT compiled - this is advantageous for speeding up development cycle. Lastly, Dart code can be compiled to Javascript to target web browsers.
+* Dart code may be AOT compiled to native code, providing good performance on workstations and mobile (x86 and ARM). It may also be JIT compiled - this is advantageous for speeding up development cycle. Lastly, Dart code can be compiled to Javascript to target web browsers.
 
-* Create a new Dart program/project using the `dart` tool with 'create' argument.
+* We can create a new Dart program/project using the `dart` tool with 'create' argument. Editor like VS Code and IntelliJ can also help with this.
 
 * Although Dart is strongly typed, it has type inference, meaning that types can be ommited. For example:
 
@@ -17,7 +17,7 @@ var y = 42; // compiler infers that 'y' is of type int
 y = 'abcd'; // compile error as compiler knows 'y' is of type int 
 ```
 
-* Each Dart programmust have a `main` method with zero or more arguments. Examples are below.
+* To start a Dart program, its `main` methon is called. The `main` method may take zero or more arguments. Examples are below.
 ```dart
 //zero args main method
 void main(){
@@ -33,7 +33,7 @@ void main(List<String> args){
 ```
 * The basic or built-in types include int, double, bool, String, List (a.k.a arrays), Set, Map and Symbol. These will be detailed later.
 
-* Unlike Java, Dart does not have explicit access modifiers (public, protected and private). If a variable or method name begins with an underscore, it is private to its **library**, else it is public. An alternative to this is to use the `@protected` annotation available from the *meta* package - this makes it possible to use a variable or method only inside a class or its sub-classes
+* Unlike Java, Dart does not have explicit access modifiers (public, protected and private). If a variable or method name begins with an underscore, it is private to its **library**, else it is public. We can use the `@protected` annotation from the *meta* package - this makes it possible to restrict use of a variable or method to only inside a class or its sub-classes.
 ```
 TODO confirm meta package annotation impact
 ```
@@ -45,7 +45,7 @@ TODO Constant collections
 ## Built-in Types
 
 ### Numbers
-Number types in Dart are subclasses of `num`. and may be `int` or `double`. `num` and its subclasses provide various methofs for operating on numbers including `toString()`, `ceil()`, `abs()`, etc. Alternatively, the `dart.math` library offers some other useful methods (e.g. `sqrt()`, `pow()`, etc).
+Number types in Dart are subclasses of `num`. They may be `int` or `double`. `num` and its subclasses provide various methods for operating on numbers including `toString()`, `ceil()`, `abs()`, etc. Alternatively, the `dart.math` library offers some other useful methods (e.g. `sqrt()`, `pow()`, etc).
 
 ### Strings
 
@@ -58,6 +58,7 @@ String beta = 'Hello World';
 
 Expressions (and variables) may be interpolated into strings as below:
 ```dart
+User user = getUser();
 String title = 'Software Engineer';
 int level = 10;
 //interpolate into string
@@ -65,7 +66,7 @@ print("Hello, $title"); // no need for curly braces for variables
 print("Hello, ${user.name}"); // use curly braces for expressions
 ```
 
-String concatenation may be achieved by placing string literals adjacent to each other. Multiline string literals may be created with tripple quotes. Examples of these are as below:
+String concatenation may be achieved by placing string literals adjacent to each other. Multiline string literals may be created with tripple quotes. Examples of these are:
 ```dart
 // String concatenation
 String myString = 'Hello World,' ' my name is Vader!';
@@ -254,5 +255,85 @@ In the above, `pf2` and `pf3` are variables that references anonymous functions.
     //codeblock
 };
 ```
-In the above, 
-### TODO!!
+In the above, items within square brackets are optional. So for an anonymous function without any parameters, we have `(){ //function body here};`. Also, if the anonymous function contains only a single statement, we can use the shorthand **arrow** notation to write the function as follows `(params...) => expression`. An example of this is given in `pf3` above, which is equivalent to `pf2` but uses the shorthand arrow notation.
+
+### TODO - Lexical closures!
+
+## Operators, Switch Statements and Exceptions
+
+In this section, some Dart operators are described.
+
+* `~/` represents integer division. E.g.`int answer = 48.7 ~/ 12.0; //should be 4` 
+
+* `==` represents the *equal* operator. This is a **type specific** equality check (just like `equals()` method in Java). It is realized (for custom types) by implementing the `==` method so that `aa == bb` actually triggers a call to `aa.==(bb)` (or `aa.equals(bb)` in Java). the `==` method is an *operator method* so is exposed in operator usage (e.g.  `aa == bb`)  rather than via direct call (i.e. `aa.==(bb)`).  A counterpart to `==` is Dart's `identical()` function. This function checks if two variables reference the same instance. `identical()` is a top level function that is part of `dart:core` and corresponds to the use of the `==` operator for non-primitive types in Java. Note that the implementation of `==` in Dart's root class (Object) is based on `identical()`.
+
+* `as` represent the typecast operator. For example `int num = 4.0 as int`. Note that `as` may also be used to specific library prefix (more later).
+
+* `is` is roughly equivalent to `instaceof` in Java. For example `if (emp is Person){// do something}`
+
+* `??` returns the value of the first expression if it is not null, otherwise returns the value of the second expression. For example: `xx = expr1 ?? expr2;`
+
+* `op=` is a compound assignment operator, where `op` is a supported Dart operator e.g. `/`, `*`, `~/`, etc, with the following corresponding compound assignment operators `/=`, `*=`, `~/=`, etc. 
+`a op= b` is equivalent to `a = a op b`.
+
+* `??=` is a compound assignment operator, `op` is `??` (see above). So `xx ??= value` is equivalent to `xx = xx ?? value`. In other words, assign to assignee iff the assignee is currently null.
+
+* `..` is the cascade operator. Allows a sequence of operations to be performed on an object. For example:
+
+```dart
+//WITHOUT CASCADE OPERATOR
+  var button = querySelector('#confirm'); //returns button object
+  button.text = 'Confirm';
+  button.classes.add('important');
+  .
+  .
+  .
+//WITH CASCADE OPERATOR
+  querySelector('#confirm') //returns button object - note no semi colon
+  ..text = 'Confirm' //note no semi colon
+  ..classes.add('important'); //semi colon ends the cascade
+  .
+  .
+  .
+```
+
+* `?.`  is the null-aware member access operator. For example `button?.text` allows safe use of `button.text` if `button` is null - it would return a null rather than throw a NPE.
+
+### Switch Statements
+
+Switch statements in Dart and Java are similar. A few key differences are:
+
+* Each **non-empty* case branch must be ended by a break, throw, return, rethrow or continue statement. If the case branch is completely empty, fall-through will happen as normal.
+
+* To acheive fall-through for a non-empty case branch, use label and continue construct.
+
+### Exceptions
+
+Unlike Java, Dart exceptions are unchecked - methods do not declare which exceptions they might throw and you are not required to catch any. Moreover, Dart programs are able to throw any non-null object, not just Exception or Error subclasses.
+
+Exceptions are handled with the try-on/catch-finally construct. Examples are shown below:
+
+```dart
+try{
+    // attempt to do stuff here
+} on XXXException{
+    //
+    //handles XXXException, the actual exception object is
+    //not available/used in the handling code
+    //
+} on YYYException catch(e){
+    //
+    //handles YYYException, the actual exception object e is
+    //available and may be used in the handling code
+    //
+} on ZZZException catch(e, s){
+    //
+    //handles ZZZException, the actual exception object e and the optional stacktrace object s are available and may be used in the handling code
+} catch(e){
+    //
+    //catches all other errors, regardless of type
+}
+```
+From the above, note that we use `on` to react to a specific exception type. We use `catch` if the exception object is needed in the handling code. If `catch` is not preceeded by `on`, then the type of the exception is unknown (i.e. dynamic) and the catch matches all exceptions. The same would be the case if `catch` is preceeded by `on Object` since all objects are subclasses of `Object`.
+
+A `rethrow` statement (within an on/catch branch) allows you to throw an already caught exception. 
